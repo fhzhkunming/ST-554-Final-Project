@@ -5,36 +5,40 @@
 # Date: 4/23/2026
 ################################
 
-import pandas as pd
-import time
 import os
+import time
+import pandas as pd
 
-# print("Current working directory:", os.getcwd())
+# directory of this script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# full path to stream_input inside the project folder
+input_dir = os.path.join(script_dir, "stream_input")
 
 # 1. Ensure the input directory exists
-input_dir = 'stream_input'
-if not os.path.exists(input_dir):
-    os.makedirs(input_dir)
+os.makedirs(input_dir, exist_ok=True)
 
 # 2. Clear existing files in the stream_input directory
 for f in os.listdir(input_dir):
     path = os.path.join(input_dir, f)
     if os.path.isfile(path):
         os.remove(path)
-    else:
-        continue
 
 # 3. Load the full streaming dataset
-df = pd.read_csv("https://www4.stat.ncsu.edu/~online/datasets/power_streaming_data.csv")
-
-# 4. wait for Spark to start watching
-time.sleep(10)
-
-# 5. randomly sample new files
-for i in range(20):
-    sample = df.sample(n = 5)                                             # sample 5 rows
-    sample.to_csv(f"stream_input/sample_{i}.csv", index = False)         # write the sample file to input folder
-    time.sleep(15)                                                        # pause 10 seconds between outputs
+csv_path = os.path.join(script_dir, "power_streaming_data.csv")
+df = pd.read_csv(csv_path)
 
 print("Starting data generation...")
+
+# 4. randomly sample new files
+for i in range(20):
+    sample = df.sample(n = 5)                               # sample 5 rows
+    out_path = os.path.join(input_dir, f"sample_{i}.csv")   # build the full file path for the i‑th sample inside stream_input
+    sample.to_csv(out_path, index = False)                  # write the sampled file to input folder
+    print(f"Wrote: {out_path}")                             # print the full path of the file that was just created
+    time.sleep(10)                                          # pause 10 seconds between outputs
+
+print("Data generation completed")
+
+
 
