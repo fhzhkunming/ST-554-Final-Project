@@ -5,6 +5,7 @@ This repository contains the final project for ST 554. The project demonstrates 
 Together, these parts show how Spark maintains a consistent transformation workflow across both static and streaming data sources.
 
 **Methods**
+
 **Part 1 — Batch Modeling with Spark MLlib**
 - Loaded the power consumption dataset from the UCI Machine Learning Repository.
 - Used an SQLTransformer to select relevant variables and prepare the modeling DataFrame.
